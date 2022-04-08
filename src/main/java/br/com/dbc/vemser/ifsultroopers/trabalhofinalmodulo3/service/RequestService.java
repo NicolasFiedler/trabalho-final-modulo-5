@@ -138,8 +138,12 @@ public class RequestService {
     public void incrementReachedValue(Integer idRequest, Double donateValue) throws BusinessRuleException {
         RequestEntity requestEntity = requestRepository.findById(idRequest)
                 .orElseThrow(() -> new BusinessRuleException("Vakinha não encontrada!"));
-        requestEntity.setReachedValue(requestEntity.getReachedValue() + donateValue);
+        requestEntity.setReachedValue(reachedValue(requestEntity.getReachedValue(), donateValue));
         requestRepository.save(requestEntity);
+    }
+
+    public Double reachedValue(Double vakinhaValue, Double donateValue){
+        return vakinhaValue+donateValue;
     }
 
     public List<RequestDTO> findByStatusRequestIsTrue() {
@@ -160,10 +164,16 @@ public class RequestService {
         RequestEntity requestEntity = requestRepository.findById(idRequest)
                 .orElseThrow(()-> new BusinessRuleException("Vakinha não encontrada!"));
 
-        if (requestEntity.getReachedValue() >= requestEntity.getGoal()) {
-            requestEntity.setStatusRequest(false);
-        }
+            requestEntity.setStatusRequest(checkClosedValue(requestEntity.getReachedValue(),requestEntity.getGoal()));
+
         requestRepository.save(requestEntity);
+    }
+
+    public Boolean checkClosedValue(Double valRequest, Double valGoal){
+        if (valRequest >= valGoal) {
+            return false;
+        }
+        else {return true;}
     }
 
 }

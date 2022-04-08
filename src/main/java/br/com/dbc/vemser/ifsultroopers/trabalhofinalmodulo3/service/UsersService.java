@@ -170,7 +170,7 @@ public class UsersService {
         return objectMapper.convertValue(usersEntity, UsersDTO.class);
     }
 
-    private UsersEntity validateAndSetDocument (UsersEntity usersEntity) throws BusinessRuleException {
+    public UsersEntity validateAndSetDocument (UsersEntity usersEntity) throws BusinessRuleException {
 
         CNPJ cnpj = new CNPJ(usersEntity.getDocument());
         CPF cpf = new CPF(usersEntity.getDocument());
