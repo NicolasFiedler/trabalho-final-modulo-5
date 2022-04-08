@@ -7,12 +7,10 @@ import br.com.dbc.vemser.ifsultroopers.trabalhofinalmodulo3.dto.request.RequestD
 import br.com.dbc.vemser.ifsultroopers.trabalhofinalmodulo3.dto.request.RequestUpdateDTO;
 import br.com.dbc.vemser.ifsultroopers.trabalhofinalmodulo3.dto.request.RequestWithDonatesDTO;
 import br.com.dbc.vemser.ifsultroopers.trabalhofinalmodulo3.dto.userdto.UsersDTO;
-import br.com.dbc.vemser.ifsultroopers.trabalhofinalmodulo3.dto.userdto.UsersWithRequestsDTO;
 import br.com.dbc.vemser.ifsultroopers.trabalhofinalmodulo3.entity.*;
 import br.com.dbc.vemser.ifsultroopers.trabalhofinalmodulo3.exception.BusinessRuleException;
 import br.com.dbc.vemser.ifsultroopers.trabalhofinalmodulo3.repository.RequestRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.swagger.models.auth.In;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -24,18 +22,21 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 @Getter
 @Setter
 public class RequestService {
     
-    private final RequestRepository requestRepository;
+    RequestRepository requestRepository;
     
-    private final UsersService usersService;
+    UsersService usersService;
 
-    private final ObjectMapper objectMapper;
+    ObjectMapper objectMapper;
 
-    private final BankAccountService bankAccountService;
+    BankAccountService bankAccountService;
+
+    public RequestService() {
+
+    }
 
     public List<RequestDTO> list() {
         return requestRepository.findAll()
