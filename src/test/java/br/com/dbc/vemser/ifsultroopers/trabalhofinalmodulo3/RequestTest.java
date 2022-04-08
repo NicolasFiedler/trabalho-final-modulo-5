@@ -14,13 +14,13 @@ public class RequestTest {
 
     @Test
     public void testCheckClosedValueFalse(){
-        Boolean flag = requestService.checkClosedValue(1000.0,50.0)==true;
+        Boolean flag = requestService.checkClosedValue(1000.0, 50.0);
         assertFalse(flag);
     }
 
     @Test
     public void testCheckClosedValueTrue(){
-        Boolean flag = requestService.checkClosedValue(50.0,1000.0)==true;
+        Boolean flag = requestService.checkClosedValue(50.0, 1000.0);
         assertTrue(flag);
     }
 
