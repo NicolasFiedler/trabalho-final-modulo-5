@@ -33,7 +33,7 @@ public class UsersTest {
             UsersEntity userValid = usersService.validateAndSetDocument(usersEntity);
             assertEquals(usersEntity.getDocument(), userValid.getDocument());
         } catch (BusinessRuleException businessRuleException) {
-            assertTrue(false);
+            fail();
         }
     }
 
@@ -45,7 +45,7 @@ public class UsersTest {
             UsersEntity userValid = usersService.validateAndSetDocument(usersEntity);
             assertEquals(usersEntity.getDocument(), userValid.getDocument());
         } catch (BusinessRuleException businessRuleException) {
-            assertTrue(false);
+            fail();
         }
     }
 }
