@@ -1,5 +1,6 @@
 package br.com.dbc.vemser.ifsultroopers.trabalhofinalmodulo3;
 
+import br.com.dbc.vemser.ifsultroopers.trabalhofinalmodulo3.dto.userdto.UsersDTO;
 import br.com.dbc.vemser.ifsultroopers.trabalhofinalmodulo3.entity.UsersEntity;
 import br.com.dbc.vemser.ifsultroopers.trabalhofinalmodulo3.exception.BusinessRuleException;
 import br.com.dbc.vemser.ifsultroopers.trabalhofinalmodulo3.service.UsersService;
@@ -25,11 +26,26 @@ public class UsersTest {
     }
 
     @Test
+    public void documentCnpjValidatorIsSuccessful () {
+        UsersEntity usersEntity = new UsersEntity();
+        usersEntity.setDocument("50662597000108");
+        try {
+            UsersEntity userValid = usersService.validateAndSetDocument(usersEntity);
+            assertEquals(usersEntity.getDocument(), userValid.getDocument());
+        } catch (BusinessRuleException businessRuleException) {
+            assertTrue(false);
+        }
+    }
+
+    @Test
     public void documentCpfValidatorIsSuccessful () {
         UsersEntity usersEntity = new UsersEntity();
         usersEntity.setDocument("03001529067");
-
-        Exception exception = assertThrows(BusinessRuleException.class, () -> usersService.validateAndSetDocument(usersEntity));
-        assertNull(exception);
+        try {
+            UsersEntity userValid = usersService.validateAndSetDocument(usersEntity);
+            assertEquals(usersEntity.getDocument(), userValid.getDocument());
+        } catch (BusinessRuleException businessRuleException) {
+            assertTrue(false);
+        }
     }
 }
