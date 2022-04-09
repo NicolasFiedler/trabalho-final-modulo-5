@@ -6,8 +6,10 @@ import br.com.dbc.vemser.ifsultroopers.trabalhofinalmodulo3.entity.DonateEntity;
 import br.com.dbc.vemser.ifsultroopers.trabalhofinalmodulo3.entity.RequestEntity;
 import br.com.dbc.vemser.ifsultroopers.trabalhofinalmodulo3.exception.BusinessRuleException;
 import br.com.dbc.vemser.ifsultroopers.trabalhofinalmodulo3.repository.DonateRepository;
+import br.com.dbc.vemser.ifsultroopers.trabalhofinalmodulo3.repository.RequestRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,19 +17,19 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
 public class DonateService {
 
-    private DonateRepository donateRepository;
-    private ObjectMapper objectMapper;
-    private RequestService requestService;
+    private  final DonateRepository donateRepository;
+
+    private final ObjectMapper objectMapper;
+
+    private final RequestService requestService;
+
+    private final RequestRepository requestRepository;
 
     public DonateDTO create(DonateCreateDTO donateCreate, Integer idRequest) throws Exception {
 
-        RequestEntity requestEntity = objectMapper.convertValue(requestService.getById(idRequest), RequestEntity.class);
+        RequestEntity requestEntity = requestRepository.getById(idRequest);
 
         if(requestEntity.getStatusRequest()) {
             DonateEntity donateEntity = objectMapper.convertValue(donateCreate, DonateEntity.class);

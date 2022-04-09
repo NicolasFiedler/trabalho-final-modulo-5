@@ -10,6 +10,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Getter
 @Setter
+@Builder
 @Entity(name = "REQUEST")
 public class RequestEntity {
 
