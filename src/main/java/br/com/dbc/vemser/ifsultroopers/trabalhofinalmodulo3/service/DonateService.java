@@ -7,7 +7,7 @@ import br.com.dbc.vemser.ifsultroopers.trabalhofinalmodulo3.entity.RequestEntity
 import br.com.dbc.vemser.ifsultroopers.trabalhofinalmodulo3.exception.BusinessRuleException;
 import br.com.dbc.vemser.ifsultroopers.trabalhofinalmodulo3.repository.DonateRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,11 +15,15 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
 public class DonateService {
 
-    private final DonateRepository donateRepository;
-    private final ObjectMapper objectMapper;
-    private final RequestService requestService;
+    private DonateRepository donateRepository;
+    private ObjectMapper objectMapper;
+    private RequestService requestService;
 
     public DonateDTO create(DonateCreateDTO donateCreate, Integer idRequest) throws Exception {
 
