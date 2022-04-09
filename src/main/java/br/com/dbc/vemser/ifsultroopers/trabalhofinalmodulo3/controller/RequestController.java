@@ -86,9 +86,8 @@ public class RequestController {
     })
     @PutMapping("/{idRequest}")
     @Validated
-    public ResponseEntity<RequestDTO> update(@RequestBody @Valid RequestUpdateDTO data, @RequestParam Category category) throws Exception {
-        String id = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        RequestDTO updated = requestService.update(Integer.parseInt(id), data, category);
+    public ResponseEntity<RequestDTO> update(@PathVariable("idRequest") Integer idRequest, @RequestBody @Valid RequestUpdateDTO data, @RequestParam Category category) throws Exception {
+        RequestDTO updated = requestService.update(idRequest, data, category);
         return ResponseEntity.ok(updated);
     }
 
