@@ -13,6 +13,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+
+import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -26,10 +29,6 @@ import static org.mockito.ArgumentMatchers.any;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UsersTest {
-
-//    private final UsersService mockUsersService = Mockito.mock(UsersService.class);
-//
-//    private final UsersRepository mockUsersRepository = Mockito.mock(UsersRepository.class);
 
     @InjectMocks
     private UsersService mockUsersService;
@@ -48,7 +47,7 @@ public class UsersTest {
     }
 
     @Test
-    public void shouldSuccesfulCreate () {
+    public void shouldBeSuccesfulCreate () {
         UsersCreateDTO usersCreateDTO = UsersCreateDTO.builder()
                 .email("a@a.com")
                 .name("nome")
@@ -90,18 +89,73 @@ public class UsersTest {
         verify(mockUsersRepository, times(1)).save(any());
         verify(mockRoleRepository, times(1)).findById(2);
     }
-}
+
+    @Test
+    public void documentValidatorIsFailed () {
+        UsersEntity usersEntity = new UsersEntity();
+        usersEntity.setDocument("12345678900");
+
+        Exception exception = assertThrows(BusinessRuleException.class, () -> mockUsersService.validateAndSetDocument(usersEntity));
+        assertTrue(exception.getMessage().contains("CPF ou CNPJ invalido!"));
+    }
+
+
+
+
+
 
 
 
 //    @Test
-//    public void documentValidatorIsFailed () {
-//        UsersEntity usersEntity = new UsersEntity();
-//        usersEntity.setDocument("12345678900");
+//    public void shouldBeFailBecauseDocumentIsInvalid () {
+//        UsersCreateDTO usersCreateDTO = UsersCreateDTO.builder()
+//                .email("a@a.com")
+//                .name("nome")
+//                .password("123")
+//                .document("03001529087")
+//                .build();
+//        UsersEntity usersEntity = UsersEntity.builder()
+//                .email("a@a.com")
+//                .name("nome")
+//                .password("123")
+//                .document("03001529087")
+//                .type(false)
+//                .build();
+//        RoleEntity roleEntity = RoleEntity.builder()
+//                .idRole(2)
+//                .name("ROLE_USER")
+//                .build();
 //
-//        Exception exception = assertThrows(BusinessRuleException.class, () -> usersService.validateAndSetDocument(usersEntity));
+//        Set<UsersEntity> users = new HashSet<>();
+//        users.add(usersEntity);
+//        roleEntity.setUsers(users);
+//
+//        Set<RoleEntity> roles = new HashSet<>();
+//        roles.add(roleEntity);
+//        usersEntity.setRoles(roles);
+//
+//        when(mockUsersRepository.save(any()))
+//                .thenReturn(usersEntity);
+//        when(mockRoleRepository.findById(2))
+//                .thenReturn(Optional.of(roleEntity));
+//
+//        try {
+//            assertThrows(BusinessRuleException.class, () ->  mockUsersService.create(usersCreateDTO));
+//        } catch (Exception e) {
+//            assertTrue(e.getMessage().contains("CPF ou CNPJ invalido!"));
+//        }
+//
+//        Exception exception = assertThrows(BusinessRuleException.class, () ->  mockUsersService.create(usersCreateDTO));
 //        assertTrue(exception.getMessage().contains("CPF ou CNPJ invalido!"));
+//
+//        verify(mockUsersRepository, times(0)).save(any());
+//        verify(mockRoleRepository, times(1)).findById(2);
+
 //    }
+}
+
+
+
 //
 //    @Test
 //    public void documentCnpjValidatorIsSuccessful () {
