@@ -24,19 +24,17 @@ import java.util.stream.Collectors;
 @Service
 @Getter
 @Setter
+@RequiredArgsConstructor
 public class RequestService {
     
-    RequestRepository requestRepository;
-    
-    UsersService usersService;
+    private RequestRepository requestRepository;
 
-    ObjectMapper objectMapper;
+    private UsersService usersService;
 
-    BankAccountService bankAccountService;
+    private ObjectMapper objectMapper;
 
-    public RequestService() {
+    private BankAccountService bankAccountService;
 
-    }
 
     public List<RequestDTO> list() {
         return requestRepository.findAll()
