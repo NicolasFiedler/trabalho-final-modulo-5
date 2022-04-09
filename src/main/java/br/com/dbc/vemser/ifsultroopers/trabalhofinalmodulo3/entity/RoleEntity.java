@@ -1,6 +1,7 @@
 package br.com.dbc.vemser.ifsultroopers.trabalhofinalmodulo3.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
@@ -11,6 +12,7 @@ import java.util.Set;
 
 @Getter
 @Setter
+@Builder
 @Entity(name = "ROLES")
 public class RoleEntity implements Serializable, GrantedAuthority {
     @Id
