@@ -16,6 +16,7 @@ import br.com.dbc.vemser.ifsultroopers.trabalhofinalmodulo3.exception.BusinessRu
 import br.com.dbc.vemser.ifsultroopers.trabalhofinalmodulo3.repository.RoleRepository;
 import br.com.dbc.vemser.ifsultroopers.trabalhofinalmodulo3.repository.UsersRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -139,6 +140,7 @@ public class UsersService {
         try{
             return formatUserDTODocument(usersRepository.save(validateAndSetDocument(u)));
         } catch (Exception e) {
+            e.printStackTrace();
             throw new BusinessRuleException("Valores Invalidos!");
         }
     }
@@ -167,7 +169,15 @@ public class UsersService {
             CPF cpf = new CPF(usersEntity.getDocument());
             usersEntity.setDocument(cpf.getCPF(true));
         }
-        return objectMapper.convertValue(usersEntity, UsersDTO.class);
+
+        UsersDTO usersDTO = new UsersDTO();
+        usersDTO.setIdUser(usersEntity.getIdUser());
+        usersDTO.setName(usersEntity.getName());
+        usersDTO.setPassword(usersEntity.getPassword());
+        usersDTO.setDocument(usersEntity.getDocument());
+        usersDTO.setEmail(usersEntity.getEmail());
+
+        return usersDTO;
     }
 
     public UsersEntity validateAndSetDocument (UsersEntity usersEntity) throws BusinessRuleException {
