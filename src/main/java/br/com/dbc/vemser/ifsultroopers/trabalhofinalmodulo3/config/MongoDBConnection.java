@@ -14,7 +14,7 @@ public class MongoDBConnection {
         MongoDatabase connection;
         try {
             client = MongoClients.create(URI);
-            connection = client.getDatabase("teste");
+            connection = client.getDatabase("vakinha_dashboard");
         } catch (MongoClientException e) {
             throw new BusinessRuleException(e.getMessage());
         }

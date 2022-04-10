@@ -2,30 +2,20 @@ package br.com.dbc.vemser.ifsultroopers.trabalhofinalmodulo3.repository;
 
 import br.com.dbc.vemser.ifsultroopers.trabalhofinalmodulo3.config.MongoDBConnection;
 import br.com.dbc.vemser.ifsultroopers.trabalhofinalmodulo3.entity.DonateEntity;
-import br.com.dbc.vemser.ifsultroopers.trabalhofinalmodulo3.entity.dashboard.DonateDashBoardEntity;
 import br.com.dbc.vemser.ifsultroopers.trabalhofinalmodulo3.exception.BusinessRuleException;
-import com.mongodb.client.AggregateIterable;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoCursor;
-import com.mongodb.client.model.Accumulators;
-import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.client.model.Updates;
-import com.mongodb.client.result.InsertOneResult;
-import com.mongodb.client.result.UpdateResult;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import static com.mongodb.client.model.Aggregates.group;
-import static com.mongodb.client.model.Aggregates.match;
 
 @Repository
 public class DonateDashBoardRepository {
@@ -35,7 +25,7 @@ public class DonateDashBoardRepository {
     private MongoCollection<Document> collection;
 
     private void connect() throws BusinessRuleException {
-        collection = conn.connection().getCollection("vakinha");
+        collection = conn.connection().getCollection("donates");
     }
 
     private void close() {
@@ -48,7 +38,7 @@ public class DonateDashBoardRepository {
         try {
             connect();
 
-            FindIterable<Document> findIterable = this.collection.find();
+            FindIterable<Document> findIterable = collection.find();
 
             for (Document document : findIterable) {
                 list.add(this.documentToDonate(document));
@@ -66,9 +56,67 @@ public class DonateDashBoardRepository {
         }
     }
 
+    public void insert(DonateEntity donateEntity) throws BusinessRuleException {
+        try {
+            connect();
+
+            Document document = new Document("id_donate", donateEntity.getIdDonate())
+                    .append("id_request", donateEntity.getIdRequest())
+                    .append("donator_name", donateEntity.getDonatorName())
+                    .append("donator_email", donateEntity.getDonatorEmail())
+                    .append("donate_value", donateEntity.getDonateValue())
+                    .append("donate_description", donateEntity.getDescription());
+
+            collection.insertOne(document);
+            close();
+
+        } catch (Exception e) {
+            throw new BusinessRuleException(e.getMessage());
+        }
+    }
+
+    public void update(Integer id, DonateEntity donateEntity) throws Exception {
+        try {
+            connect();
+
+            Bson update = Updates.combine(
+                    Updates.set("id_request", donateEntity.getIdRequest()),
+                    Updates.set("donator_name", donateEntity.getDonatorName()),
+                    Updates.set("donator_email", donateEntity.getDonatorEmail()),
+                    Updates.set("donate_value", donateEntity.getDonateValue()),
+                    Updates.set("donate_description", donateEntity.getDescription())
+            );
+
+            Document query = new Document("id_donate", id);
+            UpdateOptions options = new UpdateOptions().upsert(true);
+
+            collection.updateOne(query, update, options);
+
+            close();
+
+            donateEntity.setIdDonate(id);
+        } catch (Exception e) {
+            throw new BusinessRuleException(e.getMessage());
+        }
+    }
+
+    public void deleteById(Integer id) throws Exception {
+        try {
+            connect();
+
+            Document query = new Document("id_donate", id);
+
+            collection.deleteOne(query);
+
+            close();
+        } catch (Exception e) {
+            throw new BusinessRuleException(e.getMessage());
+        }
+    }
+
     private DonateEntity documentToDonate(Document document) {
         DonateEntity donateEntity = new DonateEntity();
-        donateEntity.setIdDonate(Integer.parseInt(document.get("id_vakinha").toString()));
+        donateEntity.setIdDonate(Integer.parseInt(document.get("id_donate").toString()));
         donateEntity.setIdRequest(Integer.parseInt(document.get("id_request").toString()));
         donateEntity.setDonatorName(document.get("donator_name").toString());
         donateEntity.setDonatorEmail(document.get("donator_email").toString());

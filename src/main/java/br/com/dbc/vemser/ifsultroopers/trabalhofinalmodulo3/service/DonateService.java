@@ -5,6 +5,7 @@ import br.com.dbc.vemser.ifsultroopers.trabalhofinalmodulo3.dto.donate.DonateDTO
 import br.com.dbc.vemser.ifsultroopers.trabalhofinalmodulo3.entity.DonateEntity;
 import br.com.dbc.vemser.ifsultroopers.trabalhofinalmodulo3.entity.RequestEntity;
 import br.com.dbc.vemser.ifsultroopers.trabalhofinalmodulo3.exception.BusinessRuleException;
+import br.com.dbc.vemser.ifsultroopers.trabalhofinalmodulo3.repository.DonateDashBoardRepository;
 import br.com.dbc.vemser.ifsultroopers.trabalhofinalmodulo3.repository.DonateRepository;
 import br.com.dbc.vemser.ifsultroopers.trabalhofinalmodulo3.repository.RequestRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -27,6 +28,8 @@ public class DonateService {
 
     private final RequestRepository requestRepository;
 
+    private final DonateDashBoardRepository donateDashBoardRepository;
+
     public DonateDTO create(DonateCreateDTO donateCreate, Integer idRequest) throws Exception {
 
         RequestEntity requestEntity = requestRepository.getById(idRequest);
@@ -40,6 +43,8 @@ public class DonateService {
             DonateDTO donateDTO = objectMapper.convertValue(donateRepository.save(donateEntity), DonateDTO.class);
 
             requestService.checkClosed(idRequest);
+
+            donateDashBoardRepository.insert(donateEntity);
 
         return  donateDTO;}
         else {throw new BusinessRuleException("Vakinha indisponível!");}
@@ -57,6 +62,8 @@ public class DonateService {
         requestService.incrementReachedValue(donateEntity.getIdRequest(),updateValor(donateUpdate.getDonateValue(),donateEntity.getDonateValue()));
 
         requestService.checkClosed(donateEntity.getIdRequest());
+
+        donateDashBoardRepository.update(id, donateEntity);
         return  objectMapper.convertValue(donateRepository.save(donateEntity), DonateDTO.class);
     }
 
@@ -82,6 +89,7 @@ public class DonateService {
         DonateEntity donateEntity = donateRepository.findById(id)
                 .orElseThrow(()->new BusinessRuleException("Donate não encontrada!"));
         donateRepository.deleteById(id);
+        donateDashBoardRepository.deleteById(id);
         DonateDTO donateDTO = objectMapper.convertValue(donateEntity, DonateDTO.class);
         requestService.incrementReachedValue(donateEntity.getIdRequest(), deleteValor(donateEntity.getDonateValue()));
         return donateDTO;
