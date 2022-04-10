@@ -36,6 +36,7 @@ public class RequestService {
     private BankAccountService bankAccountService;
 
 
+
     public List<RequestDTO> list() {
         return requestRepository.findAll()
                 .stream()
