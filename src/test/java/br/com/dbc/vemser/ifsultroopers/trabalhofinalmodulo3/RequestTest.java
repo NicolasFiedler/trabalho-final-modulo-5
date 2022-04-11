@@ -9,6 +9,7 @@ import br.com.dbc.vemser.ifsultroopers.trabalhofinalmodulo3.service.BankAccountS
 import br.com.dbc.vemser.ifsultroopers.trabalhofinalmodulo3.service.RequestService;
 import br.com.dbc.vemser.ifsultroopers.trabalhofinalmodulo3.service.UsersService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.runner.Request;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -30,6 +31,9 @@ public class RequestTest {
 
     @Mock
     public RequestRepository requestRepository;
+
+    @Mock
+    RequestService requestService = new RequestService();
 
     @Mock
     private final ObjectMapper objectMapper = new ObjectMapper();
@@ -64,8 +68,6 @@ public class RequestTest {
                 .build();
 
 
-        RequestService requestService = new RequestService();
-
         try {
         when(objectMapper.convertValue((Object) any(), eq(RequestEntity.class))).thenReturn(vakinhaTeste);
         when(objectMapper.convertValue((Object) any(), eq(UsersEntity.class))).thenReturn(usersEntity);
@@ -75,6 +77,44 @@ public class RequestTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    @Test
+    public void testIncrementValue() throws BusinessRuleException {
+        UsersDTO gabriel = new UsersDTO();
+        gabriel.setIdUser(1);
+
+        UsersEntity usersEntity = new UsersEntity();
+        usersEntity.setIdUser(gabriel.getIdUser());
+
+        BankAccountEntity bankAccountEntity = new BankAccountEntity();
+        bankAccountEntity.setIdBankAccount(1);
+
+        RequestEntity vakinhaTeste = RequestEntity.builder()
+                .idRequest(1)
+                .title("Vakinha Teste")
+                .description("Descrição teste vakinha")
+                .goal(10.0)
+                .reachedValue(0.0)
+                .idUser(gabriel.getIdUser())
+                .idBankAccount(1)
+                .statusRequest(true)
+                .category(Category.OUTROS)
+                .build();
+        RequestCreateDTO requestCreateDTO = RequestCreateDTO.builder()
+                .title("RequestDTO teste")
+                .description("desc RequestDTO teste")
+                .goal(vakinhaTeste.getGoal())
+                .idBankAccount(vakinhaTeste.getIdBankAccount())
+                .build();
+
+        Double donateValue = 10.0;
+
+        try {
+            requestService.incrementReachedValue(vakinhaTeste.getIdRequest(), donateValue);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 }
 
