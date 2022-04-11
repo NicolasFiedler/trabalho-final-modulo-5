@@ -11,8 +11,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DonateDashBoardDTO {
-    private Integer idDonate;
-    private Integer idVakinha;
-    private Category category;
-    private Double donateValue;
+    private String category;
+    private Integer donates;
+    private Double donatesValue;
 }

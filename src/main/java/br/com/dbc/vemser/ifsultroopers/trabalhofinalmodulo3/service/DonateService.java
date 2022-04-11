@@ -42,7 +42,7 @@ public class DonateService {
 
             DonateDTO donateDTO = objectMapper.convertValue(donateRepository.save(donateEntity), DonateDTO.class);
 
-            donateDashBoardRepository.insert(donateEntity);
+            donateDashBoardRepository.insert(donateEntity, requestEntity.getCategory().getDescription());
 
             requestService.checkClosed(idRequest);
 

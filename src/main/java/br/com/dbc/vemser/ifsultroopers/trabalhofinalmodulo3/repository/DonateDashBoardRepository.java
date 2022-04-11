@@ -1,28 +1,23 @@
 package br.com.dbc.vemser.ifsultroopers.trabalhofinalmodulo3.repository;
 
 import br.com.dbc.vemser.ifsultroopers.trabalhofinalmodulo3.config.MongoDBConnection;
-import br.com.dbc.vemser.ifsultroopers.trabalhofinalmodulo3.entity.Category;
+import br.com.dbc.vemser.ifsultroopers.trabalhofinalmodulo3.dto.dashboard.donate.DonateDashBoardDTO;
 import br.com.dbc.vemser.ifsultroopers.trabalhofinalmodulo3.entity.DonateEntity;
 import br.com.dbc.vemser.ifsultroopers.trabalhofinalmodulo3.exception.BusinessRuleException;
 import com.mongodb.client.AggregateIterable;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.Accumulators;
-import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.client.model.Updates;
 import org.bson.Document;
 import org.bson.conversions.Bson;
-import org.bson.types.ObjectId;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static com.mongodb.client.model.Aggregates.group;
-import static com.mongodb.client.model.Aggregates.match;
 
 @Repository
 public class DonateDashBoardRepository {
@@ -48,13 +43,8 @@ public class DonateDashBoardRepository {
             FindIterable<Document> findIterable = collection.find();
 
             for (Document document : findIterable) {
-                list.add(this.documentToDonate(document));
+                list.add(documentToDonate(document));
             }
-
-//            while (cursor.hasNext()) {
-//                final Document document = cursor.next();
-//                list.add(this.documentToDonate(document));
-//            }
 
             close();
             return list;
@@ -63,13 +53,14 @@ public class DonateDashBoardRepository {
         }
     }
 
-    public void insert(DonateEntity donateEntity) throws BusinessRuleException {
+    public void insert(DonateEntity donateEntity, String description) throws BusinessRuleException {
         try {
             connect();
 
             Document document = new Document("id_donate", donateEntity.getIdDonate())
                     .append("id_request", donateEntity.getIdRequest())
-                    .append("donate_value", donateEntity.getDonateValue());
+                    .append("donate_value", donateEntity.getDonateValue())
+                    .append("category", description);
 
             collection.insertOne(document);
             close();
@@ -124,28 +115,28 @@ public class DonateDashBoardRepository {
         return donateEntity;
     }
 
-//    public Double categoryValue(Category category) throws Exception {
-//            try {
-//                this.connect();
-//
-//                AggregateIterable<Document> agg = this.collection.aggregate(
-//                        Arrays.asList(
-//                                match(Filters.eq("donateCategory", category)),
-//                                group("donateCategory", Accumulators.("donateValue"))
-//                        )
-//                );
-//
-//                MongoCursor<Document> cursor = agg.iterator();
-//                while (cursor.hasNext()) {
-//                    final Document document = cursor.next();
-//                    number += Integer.parseInt(document.get("quantity").toString());
-//                }
-//
-//                this.close();
-//                return number;
-//            } catch (Exception e) {
-//                throw new Exception(e.getMessage());
-//            }
-//        }
+    public List<DonateDashBoardDTO> donatesDashBoard() throws Exception {
+        try {
+            connect();
+
+            AggregateIterable<Document> agg = collection.aggregate(List.of(
+                    group("$category", Accumulators.sum("total_donates", 1), Accumulators.sum("total_value", "$donate_value"))));
+
+            List<DonateDashBoardDTO> donateDashBoardDTOList = new ArrayList<>();
+            for (Document document : agg) {
+                DonateDashBoardDTO donateDashBoardDTO = new DonateDashBoardDTO();
+                donateDashBoardDTO.setCategory(document.get("_id").toString());
+                donateDashBoardDTO.setDonates(Integer.parseInt(document.get("total_donates").toString()));
+                donateDashBoardDTO.setDonatesValue(Double.parseDouble(document.get("total_value").toString()));
+                donateDashBoardDTOList.add(donateDashBoardDTO);
+            }
+
+            close();
+            return donateDashBoardDTOList;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new Exception(e.getMessage());
+        }
+    }
 }
 
