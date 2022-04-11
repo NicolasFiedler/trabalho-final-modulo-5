@@ -11,13 +11,14 @@ import br.com.dbc.vemser.ifsultroopers.trabalhofinalmodulo3.service.BankAccountS
 import br.com.dbc.vemser.ifsultroopers.trabalhofinalmodulo3.service.RequestService;
 import br.com.dbc.vemser.ifsultroopers.trabalhofinalmodulo3.service.UsersService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.runner.Request;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.junit.Test;
 
+
+import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -36,6 +37,12 @@ public class RequestTest {
     UsersRepository usersRepository;
 
     @Mock
+    UsersService usersService;
+
+    @Mock
+    BankAccountService bankAccountService;
+
+    @Mock
     BankAccountRepository bankAccountRepository;
 
     @Mock
@@ -43,11 +50,11 @@ public class RequestTest {
 
     @Test
     public void mustCreateRequest() throws BusinessRuleException {
-        UsersDTO gabriel = new UsersDTO();
-        gabriel.setIdUser(1);
+        UsersDTO usersDTO = new UsersDTO();
+        usersDTO.setIdUser(1);
 
         UsersEntity usersEntity = new UsersEntity();
-        usersEntity.setIdUser(gabriel.getIdUser());
+        usersEntity.setIdUser(usersDTO.getIdUser());
 
         usersRepository.save(usersEntity);
 
@@ -62,7 +69,7 @@ public class RequestTest {
                 .description("Descrição teste vakinha")
                 .goal(10.0)
                 .reachedValue(0.0)
-                .idUser(gabriel.getIdUser())
+                .idUser(usersDTO.getIdUser())
                 .idBankAccount(1)
                 .statusRequest(true)
                 .category(Category.OUTROS)
@@ -80,7 +87,7 @@ public class RequestTest {
         when(objectMapper.convertValue((Object) any(), eq(UsersEntity.class))).thenReturn(usersEntity);
         when(objectMapper.convertValue((Object) any(), eq(BankAccountEntity.class))).thenReturn(bankAccountEntity);
 
-        requestService.create(gabriel.getIdUser(), requestCreateDTO, vakinhaTeste.getCategory());
+        requestService.create(usersDTO.getIdUser(), requestCreateDTO, vakinhaTeste.getCategory());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -88,11 +95,11 @@ public class RequestTest {
     }
     @Test
     public void testIncrementValue() throws BusinessRuleException {
-        UsersDTO gabriel = new UsersDTO();
-        gabriel.setIdUser(1);
+        UsersDTO usersDTO = new UsersDTO();
+        usersDTO.setIdUser(1);
 
         UsersEntity usersEntity = new UsersEntity();
-        usersEntity.setIdUser(gabriel.getIdUser());
+        usersEntity.setIdUser(usersDTO.getIdUser());
 
         BankAccountEntity bankAccountEntity = new BankAccountEntity();
         bankAccountEntity.setIdBankAccount(1);
@@ -103,7 +110,7 @@ public class RequestTest {
                 .description("Descrição teste vakinha")
                 .goal(10.0)
                 .reachedValue(0.0)
-                .idUser(gabriel.getIdUser())
+                .idUser(usersDTO.getIdUser())
                 .idBankAccount(1)
                 .statusRequest(true)
                 .category(Category.OUTROS)
@@ -118,6 +125,7 @@ public class RequestTest {
         Double donateValue = 10.0;
 
         try {
+            when(requestRepository.findById(any())).thenReturn(Optional.of(vakinhaTeste));
             requestService.incrementReachedValue(vakinhaTeste.getIdRequest(), donateValue);
         } catch (Exception e) {
             e.printStackTrace();
