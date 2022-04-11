@@ -15,6 +15,4 @@ public class DonateDashBoardDTO {
     private Integer idVakinha;
     private Category category;
     private Double donateValue;
-    private String donatorName;
-    private String donatorEmail;
 }

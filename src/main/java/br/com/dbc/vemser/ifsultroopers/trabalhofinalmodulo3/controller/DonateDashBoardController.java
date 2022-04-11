@@ -25,7 +25,7 @@ public class DonateDashBoardController {
 
     private final DonateDashBoardService donateDashBoardService;
 
-//    //Admin
+//    Admin
 //    @ApiOperation(value = "Retorna o valor arrecadado da Categoria requisitada")
 //    @ApiResponses(value = {
 //            @ApiResponse(code = 200, message = "Retorna o valor arrecadado da Categoria requisitada"),
