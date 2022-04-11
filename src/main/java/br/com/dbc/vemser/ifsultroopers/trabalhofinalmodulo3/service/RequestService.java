@@ -27,13 +27,13 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class RequestService {
     
-    private RequestRepository requestRepository;
+    private final RequestRepository requestRepository;
 
-    private UsersService usersService;
+    private final UsersService usersService;
 
-    private ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper;
 
-    private BankAccountService bankAccountService;
+    private final BankAccountService bankAccountService;
 
 
 

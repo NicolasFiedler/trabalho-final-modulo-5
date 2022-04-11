@@ -62,10 +62,7 @@ public class DonateDashBoardRepository {
 
             Document document = new Document("id_donate", donateEntity.getIdDonate())
                     .append("id_request", donateEntity.getIdRequest())
-                    .append("donator_name", donateEntity.getDonatorName())
-                    .append("donator_email", donateEntity.getDonatorEmail())
-                    .append("donate_value", donateEntity.getDonateValue())
-                    .append("donate_description", donateEntity.getDescription());
+                    .append("donate_value", donateEntity.getDonateValue());
 
             collection.insertOne(document);
             close();
@@ -81,10 +78,7 @@ public class DonateDashBoardRepository {
 
             Bson update = Updates.combine(
                     Updates.set("id_request", donateEntity.getIdRequest()),
-                    Updates.set("donator_name", donateEntity.getDonatorName()),
-                    Updates.set("donator_email", donateEntity.getDonatorEmail()),
-                    Updates.set("donate_value", donateEntity.getDonateValue()),
-                    Updates.set("donate_description", donateEntity.getDescription())
+                    Updates.set("donate_value", donateEntity.getDonateValue())
             );
 
             Document query = new Document("id_donate", id);
@@ -118,10 +112,7 @@ public class DonateDashBoardRepository {
         DonateEntity donateEntity = new DonateEntity();
         donateEntity.setIdDonate(Integer.parseInt(document.get("id_donate").toString()));
         donateEntity.setIdRequest(Integer.parseInt(document.get("id_request").toString()));
-        donateEntity.setDonatorName(document.get("donator_name").toString());
-        donateEntity.setDonatorEmail(document.get("donator_email").toString());
         donateEntity.setDonateValue(Double.parseDouble(document.get("donate_value").toString()));
-        donateEntity.setDescription(document.get("donate_description").toString());
 
         return donateEntity;
     }
