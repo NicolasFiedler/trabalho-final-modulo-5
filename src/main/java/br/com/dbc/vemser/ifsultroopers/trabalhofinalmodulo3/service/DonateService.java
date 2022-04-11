@@ -42,9 +42,10 @@ public class DonateService {
 
             DonateDTO donateDTO = objectMapper.convertValue(donateRepository.save(donateEntity), DonateDTO.class);
 
+            donateDashBoardRepository.insert(donateEntity);
+
             requestService.checkClosed(idRequest);
 
-            donateDashBoardRepository.insert(donateEntity);
 
         return  donateDTO;}
         else {throw new BusinessRuleException("Vakinha indisponível!");}

@@ -1,4 +1,5 @@
 package br.com.dbc.vemser.ifsultroopers.trabalhofinalmodulo3.repository;
+import br.com.dbc.vemser.ifsultroopers.trabalhofinalmodulo3.entity.Category;
 import br.com.dbc.vemser.ifsultroopers.trabalhofinalmodulo3.entity.DonateEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

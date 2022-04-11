@@ -1,10 +1,15 @@
 package br.com.dbc.vemser.ifsultroopers.trabalhofinalmodulo3.repository;
 
 import br.com.dbc.vemser.ifsultroopers.trabalhofinalmodulo3.config.MongoDBConnection;
+import br.com.dbc.vemser.ifsultroopers.trabalhofinalmodulo3.entity.Category;
 import br.com.dbc.vemser.ifsultroopers.trabalhofinalmodulo3.entity.DonateEntity;
 import br.com.dbc.vemser.ifsultroopers.trabalhofinalmodulo3.exception.BusinessRuleException;
+import com.mongodb.client.AggregateIterable;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
+import com.mongodb.client.model.Accumulators;
+import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.client.model.Updates;
 import org.bson.Document;
@@ -13,9 +18,11 @@ import org.bson.types.ObjectId;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.mongodb.client.model.Aggregates.group;
+import static com.mongodb.client.model.Aggregates.match;
 
 @Repository
 public class DonateDashBoardRepository {
@@ -62,10 +69,7 @@ public class DonateDashBoardRepository {
 
             Document document = new Document("id_donate", donateEntity.getIdDonate())
                     .append("id_request", donateEntity.getIdRequest())
-                    .append("donator_name", donateEntity.getDonatorName())
-                    .append("donator_email", donateEntity.getDonatorEmail())
-                    .append("donate_value", donateEntity.getDonateValue())
-                    .append("donate_description", donateEntity.getDescription());
+                    .append("donate_value", donateEntity.getDonateValue());
 
             collection.insertOne(document);
             close();
@@ -81,10 +85,7 @@ public class DonateDashBoardRepository {
 
             Bson update = Updates.combine(
                     Updates.set("id_request", donateEntity.getIdRequest()),
-                    Updates.set("donator_name", donateEntity.getDonatorName()),
-                    Updates.set("donator_email", donateEntity.getDonatorEmail()),
-                    Updates.set("donate_value", donateEntity.getDonateValue()),
-                    Updates.set("donate_description", donateEntity.getDescription())
+                    Updates.set("donate_value", donateEntity.getDonateValue())
             );
 
             Document query = new Document("id_donate", id);
@@ -118,12 +119,33 @@ public class DonateDashBoardRepository {
         DonateEntity donateEntity = new DonateEntity();
         donateEntity.setIdDonate(Integer.parseInt(document.get("id_donate").toString()));
         donateEntity.setIdRequest(Integer.parseInt(document.get("id_request").toString()));
-        donateEntity.setDonatorName(document.get("donator_name").toString());
-        donateEntity.setDonatorEmail(document.get("donator_email").toString());
         donateEntity.setDonateValue(Double.parseDouble(document.get("donate_value").toString()));
-        donateEntity.setDescription(document.get("donate_description").toString());
 
         return donateEntity;
     }
 
+//    public Double categoryValue(Category category) throws Exception {
+//            try {
+//                this.connect();
+//
+//                AggregateIterable<Document> agg = this.collection.aggregate(
+//                        Arrays.asList(
+//                                match(Filters.eq("donateCategory", category)),
+//                                group("donateCategory", Accumulators.("donateValue"))
+//                        )
+//                );
+//
+//                MongoCursor<Document> cursor = agg.iterator();
+//                while (cursor.hasNext()) {
+//                    final Document document = cursor.next();
+//                    number += Integer.parseInt(document.get("quantity").toString());
+//                }
+//
+//                this.close();
+//                return number;
+//            } catch (Exception e) {
+//                throw new Exception(e.getMessage());
+//            }
+//        }
 }
+
