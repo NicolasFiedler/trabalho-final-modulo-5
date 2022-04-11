@@ -2,8 +2,10 @@ package br.com.dbc.vemser.ifsultroopers.trabalhofinalmodulo3;
 
 import br.com.dbc.vemser.ifsultroopers.trabalhofinalmodulo3.dto.donate.DonateCreateDTO;
 import br.com.dbc.vemser.ifsultroopers.trabalhofinalmodulo3.dto.request.RequestDTO;
+import br.com.dbc.vemser.ifsultroopers.trabalhofinalmodulo3.entity.Category;
 import br.com.dbc.vemser.ifsultroopers.trabalhofinalmodulo3.entity.DonateEntity;
 import br.com.dbc.vemser.ifsultroopers.trabalhofinalmodulo3.entity.RequestEntity;
+import br.com.dbc.vemser.ifsultroopers.trabalhofinalmodulo3.repository.DonateDashBoardRepository;
 import br.com.dbc.vemser.ifsultroopers.trabalhofinalmodulo3.repository.DonateRepository;
 import br.com.dbc.vemser.ifsultroopers.trabalhofinalmodulo3.repository.RequestRepository;
 import br.com.dbc.vemser.ifsultroopers.trabalhofinalmodulo3.service.DonateService;
@@ -33,6 +35,8 @@ public class DonateTest{
     public DonateService donateService;
     @Mock
     public DonateRepository donateRepository;
+    @Mock
+    public DonateDashBoardRepository donateDashBoardRepository;
 
     @Mock
     private RequestService requestService;
@@ -65,6 +69,7 @@ public class DonateTest{
         RequestEntity requestEntity1 = RequestEntity.builder()
                 .idRequest(1)
                 .statusRequest(true)
+                .category(Category.ANIMAIS)
                 .build();
 
         donateEntity.setRequestEntity(requestEntity1);
@@ -78,6 +83,7 @@ public class DonateTest{
             when(donateRepository.save(any(DonateEntity.class))).thenReturn(donateEntity);
             doNothing().when(requestService).incrementReachedValue(any(),any());
             doNothing().when(requestService).checkClosed(any());
+            doNothing().when(donateDashBoardRepository).insert(any(), any());
             donateService.create(donateCreateDTO, 1);
         } catch (Exception e) {
             e.printStackTrace();
@@ -108,6 +114,7 @@ public class DonateTest{
         try {
             when(donateRepository.findById(any(Integer.class))).thenReturn(Optional.of(donateEntity));
             doNothing().when(donateRepository).deleteById(any(Integer.class));
+            doNothing().when(donateDashBoardRepository).deleteById(any());
             donateService.delete(1);
         } catch (Exception e) {
             e.printStackTrace();
