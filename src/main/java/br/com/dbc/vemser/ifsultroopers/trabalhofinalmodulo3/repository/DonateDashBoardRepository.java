@@ -1,10 +1,15 @@
 package br.com.dbc.vemser.ifsultroopers.trabalhofinalmodulo3.repository;
 
 import br.com.dbc.vemser.ifsultroopers.trabalhofinalmodulo3.config.MongoDBConnection;
+import br.com.dbc.vemser.ifsultroopers.trabalhofinalmodulo3.entity.Category;
 import br.com.dbc.vemser.ifsultroopers.trabalhofinalmodulo3.entity.DonateEntity;
 import br.com.dbc.vemser.ifsultroopers.trabalhofinalmodulo3.exception.BusinessRuleException;
+import com.mongodb.client.AggregateIterable;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
+import com.mongodb.client.model.Accumulators;
+import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.client.model.Updates;
 import org.bson.Document;
@@ -13,9 +18,11 @@ import org.bson.types.ObjectId;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.mongodb.client.model.Aggregates.group;
+import static com.mongodb.client.model.Aggregates.match;
 
 @Repository
 public class DonateDashBoardRepository {
@@ -126,4 +133,28 @@ public class DonateDashBoardRepository {
         return donateEntity;
     }
 
+//    public Double categoryValue(Category category) throws Exception {
+//            try {
+//                this.connect();
+//
+//                AggregateIterable<Document> agg = this.collection.aggregate(
+//                        Arrays.asList(
+//                                match(Filters.eq("donateCategory", category)),
+//                                group("donateCategory", Accumulators.("donateValue"))
+//                        )
+//                );
+//
+//                MongoCursor<Document> cursor = agg.iterator();
+//                while (cursor.hasNext()) {
+//                    final Document document = cursor.next();
+//                    number += Integer.parseInt(document.get("quantity").toString());
+//                }
+//
+//                this.close();
+//                return number;
+//            } catch (Exception e) {
+//                throw new Exception(e.getMessage());
+//            }
+//        }
 }
+

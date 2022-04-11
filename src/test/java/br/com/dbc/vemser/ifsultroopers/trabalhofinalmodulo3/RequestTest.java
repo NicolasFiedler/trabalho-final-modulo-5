@@ -12,6 +12,8 @@ public class RequestTest {
     @Autowired
     public RequestService requestService;
 
+
+
     @Test
     public void testCheckClosedValueFalse(){
         Boolean flag = requestService.checkClosedValue(1000.0, 50.0);

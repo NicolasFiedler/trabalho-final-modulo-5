@@ -18,6 +18,7 @@ import org.junit.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -47,7 +48,7 @@ public class DonateTest{
     }
 
     @Test
-    public void ShouldSuccesfulCreate(){
+    public void shouldSuccesfulCreate(){
         DonateCreateDTO donateCreateDTO = DonateCreateDTO.builder()
                 .donatorName("Ana")
                 .donateValue(50.0)
@@ -83,6 +84,39 @@ public class DonateTest{
         }
         verify(donateRepository,times(1)).save(any(DonateEntity.class));
     }
+
+    @Test
+    public void deleteDonate(){
+        DonateEntity donateEntity = DonateEntity.builder()
+                .donatorName("Ana")
+                .donateValue(50.0)
+                .donatorEmail("anagocthel@gmail.com")
+                .description(null)
+                .idDonate(1)
+                .build();
+        RequestEntity requestEntity1 = RequestEntity.builder()
+                .idRequest(1)
+                .statusRequest(true)
+                .build();
+
+        donateEntity.setRequestEntity(requestEntity1);
+        donateEntity.setIdRequest(1);
+        Set<DonateEntity> donateEntitySet = new HashSet<>();
+        donateEntitySet.add(donateEntity);
+        requestEntity1.setDonates(donateEntitySet);
+
+        try {
+            when(donateRepository.findById(any(Integer.class))).thenReturn(Optional.of(donateEntity));
+            doNothing().when(donateRepository).deleteById(any(Integer.class));
+            donateService.delete(1);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        verify(donateRepository,times(1)).deleteById(any(Integer.class));
+    }
+
+
+
     @Test
     public void testaValorPraAtualizarNoRequest() {
         Boolean flag = donateService.updateValor(1000.0,50.0)<0 && donateService.updateValor(5.0,1000.0)>0;
